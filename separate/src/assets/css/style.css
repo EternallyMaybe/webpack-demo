@@ -1,0 +1,5 @@
+.hello {
+    height: 300px;
+    color: red;
+    background: url('../img/bg.jpg') 50% no-repeat;
+}
