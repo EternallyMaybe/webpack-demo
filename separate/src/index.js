@@ -1,18 +1,11 @@
-import '@/assets/css/style.css';
-// import _ from 'lodash';
-import {square, cube} from './math';
 
-function component() {
-    var element = document.createElement('div');
+import axios from 'axios';
 
-    // lodash 是由当前 script 脚本 import 导入进来的
-    element.innerHTML = [
-        '5 cubed is equal to' + square(5)
-    ].join('\n\n');
-+   element.classList.add('hello');
-
-    return element;
-}
-document.body.appendChild(component());
-
-// _.add(1, 2);
+axios.get('/assets/js/chunk-vendors.js')
+.then((res) => {
+    console.log(res);
+})
+.catch((err) => {
+    console.log(err)
+});
+console.log(123);

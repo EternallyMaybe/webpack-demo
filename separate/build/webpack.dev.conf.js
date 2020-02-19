@@ -15,8 +15,12 @@ module.exports = merge(baseConfig, {
         host: "localhost",
         port: "8000",
         proxy: {
-
+            '/': {
+                target: 'http://s02.mifile.cn',
+                changeOrigin: true
+            }
         }
+        
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin()
