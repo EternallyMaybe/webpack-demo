@@ -1,14 +1,15 @@
-// import './index.css';
-// import './assets/image/icon.png';
-import _ from 'lodash';
+import './assets/css/index.scss';
+import './assets/images/bg.jpg';
+import('./assets/css/async.scss');
 
-function a() {
-}
 
-function b() {
-    console.log('321321');
-}
+new Promise(() => {
+    console.log('123')
+})
+fetch('/api/path').then((res) => {
+    console.log(res)
+});
 
-a()
+console.log(document.getElementById('app'));
 
-console.log(process.env.NODE_ENV)
+document.body.innerHTML = '<div class="blue">blue</div>';
