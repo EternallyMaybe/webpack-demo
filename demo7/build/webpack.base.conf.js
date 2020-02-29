@@ -1,19 +1,26 @@
 const path = require('path');
-const webpack = require('webpack');
+const Webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const  MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const utils = require('./utils');
 
 module.exports = {
     entry: {
-        index: './src/index.js',
-        print: './src/print.js'
+        index: utils.resolve('src/index.js')
     },
     output: {
-        filename: 'static/js/[name].[chunkhash:8].js',
-        chunkFilename: 'static/js/[id].[chunkhash:8].js',
-        path: path.resolve(__dirname, 'dist/'),
+        filename: utils.assetsPath('js/[name].[chunkhash:8].js'),
+        chunkFilename: utils.assetsPath('js/[id].[chunkhash:8].js'),
+        path: utils.resolve('dist'),
+    },
+    resolve: {
+        extensions: ['.js', '.json', '.jsx'],
+        alias: {
+            '@': utils.resolve('src/')
+        }
     },
     module: {
         rules: [
@@ -37,7 +44,7 @@ module.exports = {
                         loader: 'file-loader',
                         options: {
                             name: '[name].[contenthash:8].[ext]',
-                            outputPath: 'static/fonts/'
+                            outputPath: utils.assetsPath('fonts/')
                         } 
                     }
                 ]
@@ -49,7 +56,7 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             name: '[name].[contenthash:8].[ext]',
-                            outputPath: 'static/images/',
+                            outputPath: utils.assetsPath('images/'),
                             limit: 10240
                         }
                     }
@@ -57,42 +64,32 @@ module.exports = {
             }
         ]
     },
-
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                common: {
-                    test: /[\\/]node_modules[\\/]/,
-                    chunks: 'initial',
-                    name: 'common'
-                },
-                verdor: {
-                    chunks: 'async',
-                    name: 'async'
-                }
-            }
-        }
-    },
     plugins: [
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin([
-            { from: './static', './dist/static'}
+            { from: utils.resolve('static'), to: utils.assetsPath('') }
         ]),
         new MiniCssExtractPlugin({
-            filename: 'static/css/[name].[contenthash:8].css',
-            chunkFilename: 'static/css/[id].[contenthash:8].css'
+            filename: utils.assetsPath('/css/[name].[contenthash:8].css'),
+            chunkFilename: utils.assetsPath('/css/[id].[contenthash:8].css')
         }),
         new HtmlWebpackPlugin({
-            favicon: './src/favicon.ico',
             filename: 'index.html',
-            template: './public/template.html',
+            template: utils.resolve('public/index.html'),
             inject: 'body',
-            chunks: ['index', 'print'],
+            chunks: ['index'],
             minify: {
                 removeComments: true,
                 collapseWhitespace: true
             }
+        }),
+        new Webpack.DllReferencePlugin({
+            manifest: utils.resolve('dll/vendor-manifest.json')
+        }),
+        new AddAssetHtmlWebpackPlugin({
+            filepath: utils.resolve('dll/vendor.dll.js'),
+            outputPath: utils.assetsPath('js/'),
+            publicPath: utils.assetsPath('js/')
         })
     ]
-
 }
